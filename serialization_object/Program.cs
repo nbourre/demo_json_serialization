@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +14,10 @@ namespace serialization_object
             LastName = "B",
             City = "Shawinigan",
             Birthday = DateTime.Parse("1980-01-01")
-        };
+        };        
 
         public static void simple_object_test(Formatting format = Formatting.None)
-        {            
+        {
             string resultat = JsonConvert.SerializeObject(p, format);
 
             Console.WriteLine("Exemple de conversion d'un objet simple");
@@ -38,7 +39,7 @@ namespace serialization_object
 
             string resultat = JsonConvert.SerializeObject(p, Formatting.Indented);
 
-            using (var tw = new StreamWriter(filename, true))
+            using (var tw = new StreamWriter(filename, false))
             {
                 tw.WriteLine(resultat);
                 tw.Close();
@@ -65,14 +66,86 @@ namespace serialization_object
 
             Console.WriteLine(resultat);
             Console.WriteLine("Appuyez sur une touche.");
+            Console.ReadLine();
         }
+        
+        static void serialize_object_inheritance()
+        {
+            Student student = new Student
+            {
+                FirstName = "Nick",
+                LastName = "B",
+                City = "Shawinigan",
+                Birthday = DateTime.Parse("1980-01-01"),
+                RegistrationNumber = "CS182647",
+                StudentId = 2020
+            };
+
+            string resultat = JsonConvert.SerializeObject(student, Formatting.Indented);
+
+            Console.WriteLine("Exemple de conversion d'un objet héritant");
+            Console.WriteLine(resultat);
+            Console.WriteLine("Appuyez sur une touche.");
+
+            Console.ReadLine();
+        }
+
+        static void serialize_object_aggregation()
+        {
+            Classroom @class = new Classroom { Name = "Special subjects" };
             
+
+            string resultat = JsonConvert.SerializeObject(@class, Formatting.Indented);
+            
+            Console.WriteLine("Exemple de conversion d'un objet avec aggrégat");
+            Console.WriteLine(resultat);
+            Console.WriteLine("Appuyez sur une touche.");
+
+            Console.ReadLine();
+        }
+
+        static void deserialize_from_file()
+        {
+            var filename = "person.json";
+            if (!File.Exists(filename)) save_to_file(filename);
+
+            using (StreamReader sr = File.OpenText(filename))
+            {
+
+                JObject o = (JObject)JToken.ReadFrom(new JsonTextReader(sr));
+                
+                Console.WriteLine(o.ToString());
+            }
+        }
+
+        static void deserialize_to_object() 
+        {
+            var filename = "person.json";
+            if (!File.Exists(filename)) save_to_file(filename);
+
+            using (StreamReader sr = File.OpenText(filename))
+            {
+                var fileContent = sr.ReadToEnd();
+
+                Person p = JsonConvert.DeserializeObject<Person>(fileContent);
+
+                Console.WriteLine($"***** Contenu de {filename} *****");
+                Console.WriteLine(fileContent);
+                Console.WriteLine($"***** {nameof(Person)}.toString() *****");
+                Console.WriteLine(p);
+            }            
+        }
 
         static void Main(string[] args)
         {
+            
             //simple_object_test(Formatting.Indented);
             //save_to_file("person.json");
-            serialize_array();
+            //serialize_array();
+            //serialize_object_inheritance();
+            //serialize_object_aggregation();
+            //deserialize_from_file();
+            //deserialize_to_object();
         }
     }
 }

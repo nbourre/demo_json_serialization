@@ -13,5 +13,10 @@ namespace serialization_object
         public string Province { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
+
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }
