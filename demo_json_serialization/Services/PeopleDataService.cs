@@ -1,6 +1,8 @@
 ﻿using demo_json_serialization.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace demo_json_serialization.Services
 {
@@ -210,6 +212,21 @@ namespace demo_json_serialization.Services
 
         public bool Save()
         {
+            if (string.IsNullOrEmpty(Filename))
+                throw new NullReferenceException($"{nameof(Filename)} property is empty or null");
+
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+            serializer.Formatting = Formatting.Indented;
+
+            using (StreamWriter sw = new StreamWriter(Filename))
+            {
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, data);
+                }
+            }    
+
             return false;
         }
     }

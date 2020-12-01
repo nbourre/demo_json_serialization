@@ -102,16 +102,24 @@ namespace demo_json_serialization.ViewModels
         #endregion
 
         public DelegateCommand<string> NextRecordCommand { get; set; }
+        public DelegateCommand<string> SaveCommand { get; set; }
 
         public PersonViewModel()
         {
             Name = this.GetType().Name;
             initCommands();
+
         }
 
         private void initCommands()
         {
             NextRecordCommand = new DelegateCommand<string>(NextRecord, CanExecuteNextRecord);
+            SaveCommand = new DelegateCommand<string>(Save);
+        }
+
+        private void Save(string obj)
+        {
+            saveAll();
         }
 
         private bool CanExecuteNextRecord(string obj)
@@ -128,6 +136,8 @@ namespace demo_json_serialization.ViewModels
         {
             People = new ObservableCollection<Person> (DataService.GetAll());
             CurrentPerson = People.First();
+
+            DataService.Filename = @"people_data.json";
         }
 
         private void updateProperties()
@@ -139,6 +149,11 @@ namespace demo_json_serialization.ViewModels
             OnPropertyChanged(nameof(Email));
             OnPropertyChanged(nameof(Birthday));
 
+        }
+
+        private void saveAll()
+        {
+            DataService.Save();
         }
 
     }

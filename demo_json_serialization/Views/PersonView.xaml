@@ -35,6 +35,7 @@
 
         <StackPanel Orientation="Horizontal">
             <Button Content=">" Command="{Binding NextRecordCommand}"/>
+            <Button Content="Save" Command="{Binding SaveCommand}"/>
         </StackPanel>
 
     </Grid>
